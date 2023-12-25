@@ -1,47 +1,74 @@
-﻿using System;
+using System;
 using System.Linq.Expressions;
 
 class QuadraticEquationSolver
 {
     static void Main()
     {
-        try
-        {
-            Console.WriteLine("Введите значение a:");
-            int a = ParseInput();
-
-            Console.WriteLine("Введите значение b:");
-            int b = ParseInput();
-
-            Console.WriteLine("Введите значение c:");
-            int c = ParseInput();
-
-            double[] solutions = QuadraticEquation(a, b, c);
-
-            if (solutions.Length == 2)
+        while (true)
+            try
             {
-                Console.WriteLine($"x1 = {solutions[0]}, x2 = {solutions[1]}");
+                Console.WriteLine("a * x^2 + b * x + c = 0");
+                Console.WriteLine("Введите значение a:");
+                int a = ParseInput();
+
+                Console.WriteLine("Введите значение b:");
+                int b = ParseInput();
+
+                Console.WriteLine("Введите значение c:");
+                int c = ParseInput();
+
+                double[] solutions = QuadraticEquation(a, b, c);
+
+
+                if (solutions.Length == 2)
+                {
+                    Console.WriteLine($"x1 = {solutions[0]}, x2 = {solutions[1]}");
+                }
+                else if (solutions.Length == 1)
+                {
+                    Console.WriteLine($"x = {solutions[0]}");
+                }
+
+                else
+                {
+                    throw new NoException();
+                }
+                Console.WriteLine("Введите 'да' чтобы запустить заново:");
+                Console.ResetColor();
+
+                string input = Console.ReadLine();
+
+                if (input.ToLower() == "да")
+                {
+                    Console.WriteLine("Вы ввели 'да'. \n");
+                    break;
+                }
+                else if (input.ToLower() == "нет")
+                {
+                    Console.WriteLine("Вы ввели 'нет'.\n");
+                    Environment.Exit(0);
+                }
+                else
+                {
+                    Console.WriteLine("Вы ввели неверное значение.");
+                    Environment.Exit(0);
+                }
             }
-            else if (solutions.Length == 1)
+            catch (FormatException)
             {
-                Console.WriteLine($"x = {solutions[0]}");
+                Console.WriteLine("Неверный формат данных");
+                Main();
             }
-            else
+            catch (NoException ex)
             {
-                throw new NoException();
+                FormatData(ex, Severity.Warning);
+                Main();
             }
-        }
-        catch (FormatException)
-        {
-            Console.WriteLine("Неверный формат данных");
-            Main();
-        }
-        catch (NoException ex)
-        {
-            FormatData(ex, Severity.Warning);
-            Main();
-        }
+
+
     }
+
 
     static int ParseInput()
     {
@@ -90,13 +117,13 @@ class QuadraticEquationSolver
         Console.WriteLine(ex.Message);
         Console.ResetColor();
     }
+
 }
+
 
 class NoException : Exception
 {
     public NoException() : base("Вещественных значений не найдено") { }
-
-
 }
 
 enum Severity
