@@ -128,7 +128,6 @@ class NoException : Exception
 
 enum Severity
 {
-
     Warning,
     Error
 }
