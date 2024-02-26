@@ -2,30 +2,9 @@ using System;
 
 class Program
 {
-    static void Main()
+    static void Main(string[] args)
     {
         StartInput();
-    }
-
-    private static void DisplaySolutions(int a, int b, int c, int x1, int x2, int D)
-    {
-        Console.WriteLine("a * x^2 + b * x + c = 0");
-        Console.WriteLine($"a = {a}");
-        Console.WriteLine($"b = {b}");
-        Console.WriteLine($"c = {c}");
-
-        if (D >= 0)
-        {
-            Console.WriteLine("Решения:");
-            Console.WriteLine($"x1 = {x1}");
-            Console.WriteLine($"x2 = {x2}");
-        }
-        else
-        {
-            Console.WriteLine("Вещественных значений не найдено");
-        }
-
-        Console.ReadLine();
     }
 
     private static void StartInput()
@@ -39,14 +18,14 @@ class Program
         var c = Console.ReadLine();
 
         var processing = Processing(a, b, c);
-        var aInt = processing.a;
-        var bInt = processing.b;
-        var cInt = processing.c;
+        var aDouble = processing.a;
+        var bDouble = processing.b;
+        var cDouble = processing.c;
 
         try
         {
-            var solution = Solution(aInt, bInt, cInt);
-            DisplaySolutions(aInt, bInt, cInt, solution.x1, solution.x2, solution.D);
+            var solution = Solution(aDouble, bDouble, cDouble);
+            DisplaySolutions(aDouble, bDouble, cDouble, solution.x1, solution.x2, solution.D);
         }
         catch (Exception ex)
         {
@@ -55,27 +34,27 @@ class Program
         }
     }
 
-    private static (int a, int b, int c) Processing(string a, string b, string c)
+    private static (double a, double b, double c) Processing(string a, string b, string c)
     {
         var i = 0;
         string perem = "a";
 
         try
         {
-            int aInt;
-            int bInt;
-            int cInt;
-            aInt = Int32.Parse(a.Trim('a'));
+            double aDouble;
+            double bDouble;
+            double cDouble;
+            aDouble = Double.Parse(a.Trim('a'));
             i++;
-            bInt = Int32.Parse(b.Trim('b'));
+            bDouble = Double.Parse(b.Trim('b'));
             i++;
-            cInt = Int32.Parse(c.Trim('c'));
-            return (aInt, bInt, cInt);
+            cDouble = Double.Parse(c.Trim('c'));
+            return (aDouble, bDouble, cDouble);
         }
         catch (System.OverflowException)
         {
             Console.BackgroundColor = ConsoleColor.Green;
-            Console.WriteLine("Диапазон значений int = От -2 147 483 648 до 2 147 483 647");
+            Console.WriteLine("Диапазон значений double = От -1,79769313486231570 до 1,79769313486231570");
             Console.ResetColor();
             Console.ReadLine();
             Console.Clear();
@@ -96,20 +75,20 @@ class Program
         }
     }
 
-    private static (int x1, int x2, int D) Solution(int a, int b, int c)
+    private static (double x1, double x2, double D) Solution(double a, double b, double c)
     {
-        int discriminant;
-        int x1;
-        int x2;
+        double discriminant;
+        double x1;
+        double x2;
 
-        discriminant = (int)(Math.Pow(b, 2) - 4 * a * c);
+        discriminant = Math.Pow(b, 2) - 4 * a * c;
 
         try
         {
             if (discriminant > 0 || discriminant == 0)
             {
-                x1 = (int)((-b + Math.Sqrt(discriminant)) / (2 * a));
-                x2 = (int)((-b - Math.Sqrt(discriminant)) / (2 * a));
+                x1 = (-b + Math.Sqrt(discriminant)) / (2 * a);
+                x2 = (-b - Math.Sqrt(discriminant)) / (2 * a);
                 return (x1, x2, discriminant);
             }
             else
@@ -121,5 +100,19 @@ class Program
         {
             throw;
         }
+    }
+
+    private static void DisplaySolutions(double a, double b, double c, double x1, double x2, double D)
+    {
+        if (D == 0)
+        {
+            Console.WriteLine($"x = {x1}");
+        }
+        else
+        {
+            Console.WriteLine($"x1 = {x1}, x2 = {x2}");
+        }
+
+        Console.ReadLine();
     }
 }
