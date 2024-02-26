@@ -2,10 +2,8 @@ using System;
 
 class Program
 {
-    static void Main(string[] args)
-    {
-        StartInput();
-    }
+    static void Main(string[] args) { StartInput(); }
+
 
     private static void StartInput()
     {
@@ -27,78 +25,52 @@ class Program
             var solution = Solution(aDouble, bDouble, cDouble);
             DisplaySolutions(aDouble, bDouble, cDouble, solution.x1, solution.x2, solution.D);
         }
-        catch (Exception ex)
+        catch (NotRealRootsException ex)
         {
-            Console.WriteLine(ex.Message);
-            Console.ReadLine();
+            FormatData(ex.Message, Severity.Warning);
+        }
+        catch (FormatException ex)
+        {
+            FormatData(ex.Message, Severity.Error);
+        }
+        catch (OverflowException ex)
+        {
+            FormatData(ex.Message, Severity.Error);
         }
     }
 
     private static (double a, double b, double c) Processing(string a, string b, string c)
     {
-        var i = 0;
-        string perem = "a";
-
         try
         {
-            double aDouble;
-            double bDouble;
-            double cDouble;
-            aDouble = Double.Parse(a.Trim('a'));
-            i++;
-            bDouble = Double.Parse(b.Trim('b'));
-            i++;
-            cDouble = Double.Parse(c.Trim('c'));
+            double aDouble = Double.Parse(a.Trim('a'));
+            double bDouble = Double.Parse(b.Trim('b'));
+            double cDouble = Double.Parse(c.Trim('c'));
             return (aDouble, bDouble, cDouble);
         }
-        catch (System.OverflowException)
+        catch (FormatException ex)
         {
-            Console.BackgroundColor = ConsoleColor.Green;
-            Console.WriteLine("Диапазон значений double = От -1,79769313486231570 до 1,79769313486231570");
-            Console.ResetColor();
-            Console.ReadLine();
-            Console.Clear();
-            return (0, 0, 0);
+            throw ex;
         }
-        catch
+        catch (OverflowException ex)
         {
-            if (i == 0) { perem = "a"; } else if (i == 1) { perem = "b"; } else if (i == 2) { perem = "c"; }
-
-            Console.BackgroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Неверный формат параметра {perem}");
-            Console.WriteLine($" a = {a}\n b = {b}\n c = {c}");
-            Console.ResetColor();
-            Console.ReadLine();
-            Console.Clear();
-            return (0, 0, 0);
-            //return StartInput();
+            throw ex;
         }
     }
 
     private static (double x1, double x2, double D) Solution(double a, double b, double c)
     {
-        double discriminant;
-        double x1;
-        double x2;
+        double discriminant = Math.Pow(b, 2) - 4 * a * c;
 
-        discriminant = Math.Pow(b, 2) - 4 * a * c;
-
-        try
+        if (discriminant >= 0)
         {
-            if (discriminant > 0 || discriminant == 0)
-            {
-                x1 = (-b + Math.Sqrt(discriminant)) / (2 * a);
-                x2 = (-b - Math.Sqrt(discriminant)) / (2 * a);
-                return (x1, x2, discriminant);
-            }
-            else
-            {
-                throw new NotImplementedException("Вещественных значений не найдено");
-            }
+            double x1 = (-b + Math.Sqrt(discriminant)) / (2 * a);
+            double x2 = (-b - Math.Sqrt(discriminant)) / (2 * a);
+            return (x1, x2, discriminant);
         }
-        catch
+        else
         {
-            throw;
+            throw new NotRealRootsException("Вещественных значений не найдено");
         }
     }
 
@@ -115,4 +87,26 @@ class Program
 
         Console.ReadLine();
     }
+
+    private static void FormatData(string message, Severity severity)
+    {
+        if (severity == Severity.Warning)
+        {
+            Console.BackgroundColor = ConsoleColor.Yellow;
+            Console.WriteLine(message);
+            Console.ResetColor();
+            Console.ReadLine();
+        }
+        else
+        {
+            Console.BackgroundColor = ConsoleColor.Red;
+            Console.WriteLine(message);
+            Console.ResetColor();
+            Console.ReadLine();
+        }
+    }
 }
+
+public class NotRealRootsException : Exception { public NotRealRootsException(string message) : base(message) { } }
+
+public enum Severity { Error, Warning }
