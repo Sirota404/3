@@ -92,7 +92,6 @@ class Program
             Console.ReadLine();
             Console.Clear();
             return (0, 0, 0);
-            //return StartInput();
         }
     }
 
@@ -118,9 +117,9 @@ class Program
 
     private static void FormatData(string message, Severity severity)
     {
-        Console.BackgroundColor = ConsoleColor.Yellow; // Set background color to yellow
-        Console.ForegroundColor = ConsoleColor.Black; // Set text color to black
+        Console.BackgroundColor = ConsoleColor.Yellow;
+        Console.ForegroundColor = ConsoleColor.Black; 
         Console.WriteLine(message);
-        Console.ResetColor(); // Reset colors to default
+        Console.ResetColor(); 
     }
 }
